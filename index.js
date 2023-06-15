@@ -3,7 +3,7 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5001;
 // Database - MongoDB
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // middleware 
 var cors = require('cors')
@@ -40,8 +40,19 @@ async function run() {
             const result = await propertyCollection.insertOne(addProperty);
             res.send(result)
             console.log('Success', result)
-
         });
+        app.get('/createproperty/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = await propertyCollection.findOne(query);
+            res.send(result);
+        });
+        app.delete('/createproperty/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await propertyCollection.deleteOne(query);
+            res.send(result);
+        })
 
     }
     finally {
